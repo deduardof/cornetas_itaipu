@@ -1,4 +1,5 @@
-import 'package:cornetas_itaipu/src/data/services/local_storage_service.dart';
+import 'package:cornetas_itaipu/src/controllers/credentials_controller.dart';
+import 'package:cornetas_itaipu/src/data/services/data_service.dart';
 import 'package:flutter/material.dart';
 
 class CredentialsPage extends StatefulWidget {
@@ -11,18 +12,14 @@ class CredentialsPage extends StatefulWidget {
 class _CredentialsPageState extends State<CredentialsPage> {
   final userController = TextEditingController();
   final passController = TextEditingController();
-  final loader = ValueNotifier(true);
+  final controller = CredentialsController();
   final visibility = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      final (:user, :password) = await LocalStorage.instance.getCredentials();
-      userController.text = user;
-      passController.text = password;
-      loader.value = false;
-    });
+    userController.text = DataService.instance.userCredential;
+    passController.text = DataService.instance.passwordCredential;
   }
 
   @override
@@ -30,17 +27,17 @@ class _CredentialsPageState extends State<CredentialsPage> {
     super.dispose();
     userController.dispose();
     passController.dispose();
+    visibility.dispose();
+    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    print('Width: $width');
-    return ValueListenableBuilder(
-      valueListenable: loader,
+    return ListenableBuilder(
+      listenable: controller,
       builder:
-          (_, isLoading, _) =>
-              (isLoading)
+          (_, _) =>
+              (controller.isLoading)
                   ? Center(child: CircularProgressIndicator())
                   : Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -70,9 +67,9 @@ class _CredentialsPageState extends State<CredentialsPage> {
                           height: 40,
                           child: FilledButton.icon(
                             onPressed: () async {
-                              loader.value = true;
-                              await LocalStorage.instance.saveCredentials(user: userController.text.trim(), password: passController.text.trim());
-                              loader.value = false;
+                              final user = userController.text.trim();
+                              final password = passController.text.trim();
+                              await controller.saveCredentials(user: user, password: password);
                             },
                             label: Text('Salvar'),
                             icon: Icon(Icons.check),

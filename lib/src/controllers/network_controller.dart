@@ -1,10 +1,11 @@
 import 'dart:collection';
 
-import 'package:cornetas_itaipu/src/data/ip_address.dart';
+import 'package:cornetas_itaipu/src/data/models/ip_address.dart';
+import 'package:cornetas_itaipu/src/data/services/data_service.dart';
 import 'package:cornetas_itaipu/src/data/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 
-class ConfigController extends ChangeNotifier {
+class NetworkController extends ChangeNotifier {
   final _cornetas = <IpAddress>[];
   final _localStorage = LocalStorage.instance;
 
@@ -14,6 +15,11 @@ class ConfigController extends ChangeNotifier {
     if (value == null || value.isEmpty || !IpAddress.validate(value: value)) return 'Forneça um IP válido.';
     final ip = IpAddress.fromString(value);
     return (_cornetas.contains(ip)) ? 'IP já cadastrado.' : null;
+  }
+
+  void init() {
+    _cornetas.clear();
+    _cornetas.addAll(DataService.instance.ips);
   }
 
   Future<void> load() async {
@@ -27,14 +33,17 @@ class ConfigController extends ChangeNotifier {
     final corneta = IpAddress.fromString(value);
     if (!_cornetas.contains(corneta)) {
       _cornetas.add(corneta);
-      await _localStorage.addAllIPs(ips: _cornetas);
+      await _localStorage.setIPs(ips: _cornetas);
+      DataService.instance.ips.add(corneta);
       notifyListeners();
     }
   }
 
   Future<void> remove(int index) async {
     _cornetas.removeAt(index);
-    await _localStorage.addAllIPs(ips: _cornetas);
+    await _localStorage.setIPs(ips: _cornetas);
+    DataService.instance.ips.clear();
+    DataService.instance.ips.addAll(_cornetas);
     notifyListeners();
   }
 }

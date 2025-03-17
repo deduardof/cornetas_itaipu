@@ -1,4 +1,5 @@
-import 'package:cornetas_itaipu/src/data/ip_address.dart';
+import 'package:cornetas_itaipu/src/data/models/ip_address.dart';
+import 'package:cornetas_itaipu/src/data/services/logger_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
@@ -9,17 +10,19 @@ class LocalStorage {
   LocalStorage._();
   static LocalStorage get instance => _instance ??= LocalStorage._();
 
-  Future<void> addAllIPs({required List<IpAddress> ips}) async {
+  Future<void> setIPs({required List<IpAddress> ips}) async {
     final list = ips.map((ip) => ip.toString()).toList();
     await _prefs.setStringList('ips', list);
+    Logger.instance.write(' -> Atualizado IPs de acesso.');
   }
 
   Future<List<IpAddress>> getAllIpAddress() async {
     try {
       final response = await _prefs.getStringList('ips');
+      Logger.instance.write(' -> Recuperado lista de IPs de acesso.');
       return (response != null && response.isNotEmpty) ? response.map(IpAddress.fromString).toList() : <IpAddress>[];
     } on TypeError catch (e) {
-      print(e.toString());
+      Logger.instance.write(e.toString());
       return <IpAddress>[];
     }
   }
@@ -28,8 +31,9 @@ class LocalStorage {
     try {
       await _prefs.setString('userCredential', user);
       await _prefs.setString('passCredential', password);
+      Logger.instance.write(' -> Salvo credenciais de acesso.');
     } catch (e) {
-      print(e.toString());
+      Logger.instance.write(e.toString());
     }
   }
 
@@ -37,9 +41,10 @@ class LocalStorage {
     try {
       final user = await _prefs.getString('userCredential');
       final password = await _prefs.getString('passCredential');
+      Logger.instance.write(' -> Recuperado credenciais de acesso.');
       return (user: user ?? '', password: password ?? '');
     } catch (e) {
-      print(e.toString());
+      Logger.instance.write(e.toString());
       return (user: '', password: '');
     }
   }

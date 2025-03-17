@@ -1,4 +1,4 @@
-import 'package:cornetas_itaipu/src/controllers/config_controller.dart';
+import 'package:cornetas_itaipu/src/controllers/network_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,13 +11,20 @@ class NetworkPage extends StatefulWidget {
 
 class _NetworkPageState extends State<NetworkPage> {
   final formKey = GlobalKey<FormState>();
-  final controller = ConfigController();
+  final controller = NetworkController();
   final addController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async => await controller.load());
+    controller.init();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    addController.dispose();
   }
 
   @override
