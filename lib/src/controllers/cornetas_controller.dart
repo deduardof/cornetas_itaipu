@@ -1,31 +1,44 @@
 import 'dart:collection';
 
+import 'package:cornetas_itaipu/src/data/models/corneta.dart';
 import 'package:cornetas_itaipu/src/data/models/ip_address.dart';
-import 'package:cornetas_itaipu/src/data/services/data_service.dart';
 import 'package:cornetas_itaipu/src/data/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 
-class NetworkController extends ChangeNotifier {
-  final _cornetas = <IpAddress>[];
+class CornetasController extends ChangeNotifier {
+  final _cornetas = <Corneta>[];
   final _localStorage = LocalStorage.instance;
 
-  UnmodifiableListView<IpAddress> get cornetas => UnmodifiableListView(_cornetas);
+  UnmodifiableListView<Corneta> get cornetas => UnmodifiableListView(_cornetas);
 
   String? validateIP(String? value) {
     if (value == null || value.isEmpty || !IpAddress.validate(value: value)) return 'Forneça um IP válido.';
+
     final ip = IpAddress.fromString(value);
-    return (_cornetas.contains(ip)) ? 'IP já cadastrado.' : null;
+
+    for (var corneta in _cornetas) {
+      if (corneta.ip == ip) return 'IP já cadastrado.';
+    }
+    return null;
   }
 
-  void init() {
+  String? validateLabel(String? value) => (value?.isEmpty ?? true) ? 'Campo obrigatório.' : null;
+
+  void addCorneta({required String group, required String label, required String ip}) {
+    final corneta = Corneta(nome: label, ip: IpAddress.fromString(ip), grupo: group);
+    _cornetas.add(corneta);
+    notifyListeners();
+  }
+
+  /*   void init() {
     _cornetas.clear();
-    _cornetas.addAll(DataService.instance.ips);
+    // _cornetas.addAll(DataService.instance.ips);
   }
 
   Future<void> load() async {
     final cornetas = await _localStorage.getAllIpAddress();
     _cornetas.clear();
-    _cornetas.addAll(cornetas);
+    // _cornetas.addAll(cornetas);
     notifyListeners();
   }
 
@@ -38,12 +51,13 @@ class NetworkController extends ChangeNotifier {
       notifyListeners();
     }
   }
+  */
 
   Future<void> remove(int index) async {
     _cornetas.removeAt(index);
-    await _localStorage.setIPs(ips: _cornetas);
-    DataService.instance.ips.clear();
-    DataService.instance.ips.addAll(_cornetas);
+    // await _localStorage.setIPs(ips: _cornetas);
+    // DataService.instance.ips.clear();
+    // DataService.instance.ips.addAll(_cornetas);
     notifyListeners();
   }
 }

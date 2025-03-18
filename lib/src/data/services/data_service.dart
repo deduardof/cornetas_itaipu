@@ -7,6 +7,7 @@ class DataService {
   static DataService get instance => _instance ??= DataService._();
 
   final ips = <IpAddress>[];
+  final audios = <String>[];
   String userCredential = '';
   String passwordCredential = '';
 }

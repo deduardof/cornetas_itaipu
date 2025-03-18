@@ -48,4 +48,22 @@ class LocalStorage {
       return (user: '', password: '');
     }
   }
+
+  Future<void> saveAudios({required List<String> audios}) async {
+    try {
+      await _prefs.setStringList('audios', audios);
+    } catch (e) {
+      Logger.instance.write(e.toString());
+    }
+  }
+
+  Future<List<String>> getAudios() async {
+    try {
+      final response = await _prefs.getStringList('audios');
+      return (response != null) ? response : <String>[];
+    } catch (e) {
+      Logger.instance.write(e.toString());
+      return <String>[];
+    }
+  }
 }
