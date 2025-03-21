@@ -4,21 +4,28 @@ import 'package:flutter/material.dart';
 
 class HomeController extends ChangeNotifier {
   bool _loader = true;
-
   bool get isLoading => _loader;
 
-  Future<void> loadData() async {
-    final credentials = await LocalStorage.instance.getCredentials();
-    final ips = await LocalStorage.instance.getAllIpAddress();
-    final audios = await LocalStorage.instance.getAudios();
+  void loadData() {
+    final storage = LocalStorage.instance;
+
+    final credentials = storage.getCredentials();
+    final cornetas = storage.getCornetas();
+    final songs = storage.getSongs();
 
     final data = DataService.instance;
 
     data.userCredential = credentials.user;
     data.passwordCredential = credentials.password;
-    data.ips.addAll(ips);
-    data.audios.addAll(audios);
+    data.cornetas.addAll(cornetas);
+    data.songs.addAll(songs);
     _loader = false;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    LocalStorage.instance.dispose();
   }
 }

@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 class Logger extends ChangeNotifier {
   static Logger? _instance;
 
-  Logger._();
+  Logger._() {
+    final now = DateTime.now().toIso8601String();
+    _logFile.writeAsBytesSync('\n=============== START LOG: $now ===============\n'.codeUnits, mode: FileMode.append);
+  }
   static Logger get instance => _instance ??= Logger._();
 
   String _text = '';

@@ -24,6 +24,7 @@ class IpAddress {
   String toString() => '$first.$second.$third.$fourth';
 
   @override
+  // ignore: hash_and_equals
   bool operator ==(Object other) {
     if (other is IpAddress) {
       return first == other.first && second == other.second && third == other.third && fourth == other.fourth;

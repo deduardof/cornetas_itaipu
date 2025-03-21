@@ -9,12 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # dio: ^5.8.0+1
   http_auth: ^1.0.4
-  shared_preferences: ^2.5.2
+  # shared_preferences: ^2.5.2
+  sqlite3: ^2.7.5
   flex_color_scheme: ^8.1.1
-  google_fonts: ^6.2.1
-  mask_text_input_formatter: ^2.9.0
+  
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,7 @@
 
 Exigências do Kleber:
 
-[] Acrescentar um label aos IPs
+[x] Acrescentar um label aos IPs
 [] Selecionar quais cornetas serão acionadas
 [] Colocar um popup de confirmação para execução de áudio de verificação;
 [] Escolher o áudio entre Teste Simples (tocaria o áudio ding_dong.mp3)
