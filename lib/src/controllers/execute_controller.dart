@@ -47,7 +47,7 @@ class ExecuteController extends ChangeNotifier {
 
   Future<void> stopAllPlaying() async {
     _isCanceling.value = true;
-    _cornetas.expand((c) => c.cornetas).where((c) => c.status.value == CornetaStatus.playing).map((c) => stop(corneta: c));
+    await Future.wait(_cornetas.expand((c) => c.cornetas).where((c) => c.status.value == CornetaStatus.playing).map((c) => stop(corneta: c)));
     _isCanceling.value = false;
   }
 }

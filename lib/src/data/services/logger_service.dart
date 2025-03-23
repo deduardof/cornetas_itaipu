@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class Logger extends ChangeNotifier {
   String get text => _text;
 
   void write(String value) {
+    log(value);
     _text = '$_text$value\n';
     _logFile.writeAsBytesSync(value.codeUnits, mode: FileMode.append);
     notifyListeners();

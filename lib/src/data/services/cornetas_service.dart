@@ -9,8 +9,6 @@ class CornetasService {
   static CornetasService get instance => _instance ??= CornetasService._();
 
   Future<bool> play({required Corneta corneta}) async {
-    //http://evac:hornevac2025@172.27.12.200/axis-cgi/playclip.cgi?location=ding_dong.mp3&repeat=0&volume=100&audiooutput=1
-
     final url = 'http://${corneta.ip.toString()}/axis-cgi/playclip.cgi?location=${corneta.song}&repeat=0&volume=100&audiooutput=1';
 
     Logger.instance.write(' -> Enviando sinal para corneta');
